@@ -7,355 +7,140 @@
     <title>Acceso | FARM SJB</title>
 
     <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            min-height: 100vh;
-            margin: 0;
-            background: #edf1f7;
-            font-family: Arial, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 25px;
-        }
-
-        .login-container {
-            width: 100%;
-            max-width: 1000px;
-            min-height: 590px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            background: white;
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(24, 37, 54, .15);
-        }
-
-        .login-brand {
-            background: linear-gradient(145deg, #172536, #263f5a);
-            color: white;
-            padding: 55px 45px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .login-brand::before,
-        .login-brand::after {
-            content: "";
-            position: absolute;
-            border: 1px solid rgba(255,255,255,.10);
-            border-radius: 50%;
-            width: 330px;
-            height: 330px;
-        }
-
-        .login-brand::before {
-            right: -170px;
-            top: -100px;
-        }
-
-        .login-brand::after {
-            left: -190px;
-            bottom: -180px;
-            width: 420px;
-            height: 420px;
-        }
-
-        .brand-logo {
-            width: 65px;
-            height: 65px;
-            background: #dc3566;
-            border-radius: 18px;
-            display: grid;
-            place-items: center;
-            font-size: 36px;
-            font-weight: bold;
-            position: relative;
-            z-index: 1;
-        }
-
-        .brand-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .brand-content h1 {
-            font-size: 34px;
-            font-weight: 800;
-            margin-bottom: 15px;
-        }
-
-        .brand-content p {
-            color: #cbd5e1;
-            line-height: 1.8;
-        }
-
-        .brand-footer {
-            position: relative;
-            z-index: 1;
-            color: #aebed0;
-            font-size: 12px;
-        }
-
-        .login-form {
-            padding: 55px 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .login-form h2 {
-            font-weight: 800;
-            color: #192b40;
-            font-size: 29px;
-        }
-
-        .login-form .subtitle {
-            color: #8793a2;
-            margin-bottom: 32px;
-        }
-
-        .form-label {
-            color: #34445a;
-            font-weight: 600;
-            font-size: 13px;
-        }
-
-        .form-control {
-            padding: 13px 15px;
-            border: 1px solid #dce3ec;
-            border-radius: 10px;
-            background: #f9fafc;
-        }
-
-        .form-control:focus {
-            border-color: #dc3566;
-            box-shadow: 0 0 0 3px rgba(220,53,102,.10);
-            background: white;
-        }
-
-        .btn-login {
-            background: #dc3566;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 14px;
-            font-weight: 700;
-            transition: .2s;
-        }
-
-        .btn-login:hover {
-            background: #c32957;
-            color: white;
-            transform: translateY(-1px);
-        }
-
-        .password-wrap {
-            position: relative;
-        }
-
-        .password-wrap input {
-            padding-right: 48px;
-        }
-
-        .toggle-password {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            border: none;
-            background: transparent;
-            color: #7d8998;
-        }
-
-        @media(max-width: 768px) {
-            .login-container {
-                grid-template-columns: 1fr;
-                max-width: 440px;
-            }
-
-            .login-brand {
-                padding: 30px;
-                min-height: 230px;
-            }
-
-            .brand-content h1 {
-                font-size: 25px;
-            }
-
-            .brand-footer {
-                margin-top: 25px;
-            }
-
-            .login-form {
-                padding: 35px 28px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 </head>
 
 <body>
 
-<div class="login-container">
+<main class="login-wrapper d-flex">
 
-    <section class="login-brand">
-
-        <div class="brand-logo">+</div>
-
-        <div class="brand-content">
-            <span class="text-uppercase small fw-bold"
-                  style="letter-spacing:3px;color:#f18ba9">
-                FARM SJB
-            </span>
-
-            <h1>Tu farmacia,<br>más cerca de ti.</h1>
-
-            <p>
-                Plataforma integral para la administración,
-                control de medicamentos, ventas y atención
-                a nuestros clientes.
-            </p>
+    <section class="login-brand bg-dark text-white d-none d-lg-flex flex-column justify-content-between p-5" aria-hidden="true">
+        <div class="d-flex align-items-center">
+            <div class="brand-icon rounded-circle bg-primary d-flex align-items-center justify-content-center me-3 flex-shrink-0">
+                <i class="bi bi-plus-lg text-white fs-5 fw-bold"></i>
+            </div>
+            <div class="lh-sm">
+                <div class="text-white fw-bold fs-5 lh-1">San Juan</div>
+                <div class="sidebar-section-title text-white-50 fw-normal mt-1">Sistema de Venta de Medicamentos</div>
+            </div>
         </div>
 
-        <div class="brand-footer">
-            Sistema de Venta de Medicamentos
-            <br>
-            San Juan Bautista © {{ date('Y') }}
+        <div class="login-brand-copy">
+            <h1 class="display-6 fw-bold mb-3">Gestiona tu farmacia de forma simple y segura.</h1>
+            <p class="text-white-50 mb-0">Ventas, inventario y clientes en un solo lugar.</p>
         </div>
 
+        <ul class="list-unstyled d-flex flex-column gap-3 mb-0 small">
+            <li class="d-flex align-items-center gap-2 text-white-50">
+                <i class="bi bi-shield-check text-primary"></i> Acceso protegido por roles
+            </li>
+            <li class="d-flex align-items-center gap-2 text-white-50">
+                <i class="bi bi-graph-up-arrow text-primary"></i> Reportes en tiempo real
+            </li>
+            <li class="d-flex align-items-center gap-2 text-white-50">
+                <i class="bi bi-box-seam text-primary"></i> Control de stock y vencimientos
+            </li>
+        </ul>
     </section>
 
+    <section class="flex-grow-1 d-flex align-items-center justify-content-center p-4">
+        <div class="login-card w-100">
 
-    <section class="login-form">
-
-        <div class="mb-4">
-            <span class="badge rounded-pill px-3 py-2 mb-3"
-                  style="background:#fff0f4;color:#dc3566">
-                ACCESO AL SISTEMA
-            </span>
-
-            <h2>¡Bienvenido!</h2>
-
-            <p class="subtitle">
-                Ingresa tus credenciales para continuar.
-            </p>
-        </div>
-
-
-        @if(session('ok'))
-            <div class="alert alert-success">
-                {{ session('ok') }}
+            <div class="d-flex d-lg-none align-items-center justify-content-center mb-4">
+                <div class="brand-icon rounded-circle bg-primary d-flex align-items-center justify-content-center me-2">
+                    <i class="bi bi-plus-lg text-white fs-5 fw-bold"></i>
+                </div>
+                <span class="fw-bold fs-5 text-dark">San Juan</span>
             </div>
-        @endif
-
-        @if($errors->any())
-            <div class="alert alert-danger">
-                {{ $errors->first() }}
-            </div>
-        @endif
-
-
-        <form action="{{ route('login.store') }}" method="POST">
-
-            @csrf
 
             <div class="mb-4">
-                <label for="email" class="form-label">
-                    Correo electrónico
-                </label>
-
-                <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    class="form-control"
-                    placeholder="ejemplo@farmacia.com"
-                    value="{{ old('email') }}"
-                    autocomplete="username"
-                    required
-                    autofocus
-                >
+                <h2 class="h3 fw-bold text-dark mb-1">Bienvenido</h2>
+                <p class="text-secondary small mb-0">Ingresa tus credenciales para continuar.</p>
             </div>
 
-
-            <div class="mb-3">
-                <label for="password" class="form-label">
-                    Contraseña
-                </label>
-
-                <div class="password-wrap">
-                    <input
-                        type="password"
-                        name="password"
-                        id="password"
-                        class="form-control"
-                        placeholder="Ingresa tu contraseña"
-                        autocomplete="current-password"
-                        required
-                    >
-
-                    <button
-                        type="button"
-                        class="toggle-password"
-                        onclick="togglePassword()"
-                        aria-label="Mostrar u ocultar contraseña">
-                        <span id="passwordIcon">◉</span>
-                    </button>
+            @if(session('ok'))
+                <div class="alert alert-success small py-2" role="alert">
+                    <i class="bi bi-check-circle me-1"></i> {{ session('ok') }}
                 </div>
-            </div>
+            @endif
 
+            @error('email')
+                <div id="loginAlert" class="alert alert-danger small py-2" role="alert">
+                    <i class="bi bi-exclamation-circle me-1"></i> {{ $message }}
+                </div>
+            @enderror
 
-            <div class="form-check mb-4">
-                <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="remember"
-                    name="remember"
-                    value="1"
-                >
+            <form action="{{ route('login') }}" method="POST" class="needs-validation">
+                @csrf
 
-                <label class="form-check-label small text-secondary"
-                       for="remember">
-                    Recordar mi sesión
-                </label>
-            </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label small fw-semibold text-dark">Usuario o correo</label>
+                    <div class="input-group has-validation login-input-group">
+                        <span class="input-group-text bg-white"><i class="bi bi-person text-secondary"></i></span>
+                        <input type="email" id="email" name="email" class="form-control border-start-0 @error('email') is-invalid @enderror"
+                               placeholder="usuario@sanjuan.com" autocomplete="username" value="{{ old('email') }}" required autofocus>
+                        <div class="invalid-feedback">Ingresa tu correo electrónico.</div>
+                    </div>
+                </div>
 
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <label for="password" class="form-label small fw-semibold text-dark">Contraseña</label>
+                        <a href="#" class="small text-primary text-decoration-none mb-2">¿Olvidaste tu contraseña?</a>
+                    </div>
+                    <div class="input-group has-validation login-input-group">
+                        <span class="input-group-text bg-white"><i class="bi bi-lock text-secondary"></i></span>
+                        <input type="password" id="password" name="password" class="form-control border-start-0 border-end-0 @error('password') is-invalid @enderror"
+                               placeholder="••••••••" autocomplete="current-password" required>
+                        <button type="button" id="togglePassword" class="input-group-text bg-white" aria-label="Mostrar contraseña">
+                            <i class="bi bi-eye text-secondary"></i>
+                        </button>
+                        <div class="invalid-feedback">Ingresa tu contraseña.</div>
+                    </div>
+                </div>
 
-            <button type="submit" class="btn btn-login w-100">
-                Iniciar sesión →
-            </button>
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" id="remember" name="remember" value="1">
+                    <label class="form-check-label small text-secondary" for="remember">Mantener sesión iniciada</label>
+                </div>
 
-        </form>
+                <button type="submit" id="loginSubmit" class="btn btn-primary w-100 py-2 fw-semibold rounded-3">
+                    <span class="spinner-border spinner-border-sm me-2 d-none" aria-hidden="true"></span>
+                    <span class="btn-label">Iniciar sesión</span>
+                </button>
+            </form>
 
-        <p class="text-center text-secondary small mt-4 mb-0">
-            Acceso exclusivo para personal autorizado.
-        </p>
-
+            <p class="text-center text-secondary small mt-5 mb-0">&copy; {{ date('Y') }} FARM SJB · Todos los derechos reservados</p>
+        </div>
     </section>
 
-</div>
+</main>
 
+<script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
 <script>
-    function togglePassword() {
-        const password = document.getElementById('password');
-        const icon = document.getElementById('passwordIcon');
+    const password = document.getElementById('password');
+    const togglePassword = document.getElementById('togglePassword');
 
-        if (password.type === 'password') {
-            password.type = 'text';
-            icon.textContent = '◎';
-        } else {
-            password.type = 'password';
-            icon.textContent = '◉';
+    togglePassword?.addEventListener('click', () => {
+        const visible = password.type === 'text';
+        password.type = visible ? 'password' : 'text';
+        togglePassword.setAttribute('aria-label', visible ? 'Mostrar contraseña' : 'Ocultar contraseña');
+        togglePassword.querySelector('i').className = `bi ${visible ? 'bi-eye' : 'bi-eye-slash'} text-secondary`;
+    });
+
+    document.querySelector('form.needs-validation')?.addEventListener('submit', (event) => {
+        const form = event.currentTarget;
+
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated');
+            return;
         }
-    }
+
+        const submit = document.getElementById('loginSubmit');
+        submit.disabled = true;
+        submit.querySelector('.spinner-border').classList.remove('d-none');
+        submit.querySelector('.btn-label').textContent = 'Ingresando...';
+    });
 </script>
 
 </body>

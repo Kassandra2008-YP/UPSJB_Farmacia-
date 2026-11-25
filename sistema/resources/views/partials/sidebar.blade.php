@@ -41,6 +41,7 @@
                 </a>
             </li>
 
+            @if (auth()->user()->hasRole('Administrador', 'Químico farmacéutico'))
             {{-- REPORTES --}}
             <li class="nav-item">
                 <a href="{{ route('reports.index') }}"
@@ -51,6 +52,7 @@
                     <span class="small fw-medium">Reportes</span>
                 </a>
             </li>
+            @endif
 
         </ul>
 
@@ -63,6 +65,7 @@
         <ul class="nav flex-column gap-1 mb-1">
 
             {{-- MEDICAMENTOS --}}
+            @if (auth()->user()->hasRole('Administrador', 'Químico farmacéutico'))
             <li class="nav-item">
                 <a href="{{ route('medicines.index') }}"
                    class="nav-link sidebar-link text-white-50 rounded-4 px-3 py-2 d-flex align-items-center gap-2 {{ request()->is('medicines*') ? 'active_item' : null }}">
@@ -71,6 +74,7 @@
                     <span class="small fw-medium">Medicamentos</span>
                 </a>
             </li>
+            @endif
 
             {{-- CLIENTES --}}
             <li class="nav-item">
@@ -96,6 +100,7 @@
 
 
         {{-- CONFIGURACIONES --}}
+        @if (auth()->user()->hasRole('Administrador'))
         <p class="sidebar-section-title text-white-50 text-uppercase fw-semibold px-3 mb-2 mt-3">
             Configuraciones
         </p>
@@ -133,6 +138,7 @@
             </li>
 
         </ul>
+        @endif
 
     </nav>
 
@@ -150,7 +156,7 @@
 
             <div class="user-avatar rounded-circle bg-primary d-flex align-items-center justify-content-center flex-shrink-0">
                 <span class="text-white fw-bold lh-1">
-                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                    {{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 2)) }}
                 </span>
             </div>
 
@@ -183,7 +189,7 @@
                          style="width:40px;height:40px">
 
                         <span class="text-white fw-bold small">
-                            {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                            {{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 2)) }}
                         </span>
 
                     </div>

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
@@ -19,10 +20,10 @@ use App\Http\Controllers\UserController;
 
 Route::middleware('guest')->group(function () {
 
-    Route::get('/login', [AuthController::class, 'showLogin'])
+    Route::get('/login', [LoginController::class, 'showLoginForm'])
         ->name('login');
 
-    Route::post('/login', [AuthController::class, 'login'])
+    Route::post('/login', [LoginController::class, 'login'])
         ->middleware('throttle:5,1')
         ->name('login.store');
 
@@ -65,10 +66,7 @@ Route::middleware('auth')->group(function () {
         ->name('reports.index');
 
 
-    // ======================================
-    // PERFIL DEL USUARIO
-    // ======================================
-
+    // Perfil del usuario
     Route::get('/profile', [AuthController::class, 'profile'])
         ->name('profile.edit');
 
@@ -76,10 +74,7 @@ Route::middleware('auth')->group(function () {
         ->name('profile.update');
 
 
-    // ======================================
-    // CAMBIAR CONTRASEÑA
-    // ======================================
-
+    // Cambiar contraseña
     Route::get('/password', [AuthController::class, 'password'])
         ->name('password.edit');
 
@@ -87,10 +82,7 @@ Route::middleware('auth')->group(function () {
         ->name('password.update');
 
 
-    // ======================================
-    // PREFERENCIAS
-    // ======================================
-
+    // Preferencias
     Route::get('/preferences', [AuthController::class, 'preferences'])
         ->name('preferences.edit');
 
@@ -98,11 +90,8 @@ Route::middleware('auth')->group(function () {
         ->name('preferences.update');
 
 
-    // ======================================
-    // CERRAR SESIÓN
-    // ======================================
-
-    Route::post('/logout', [AuthController::class, 'logout'])
+    // Cerrar sesión
+    Route::post('/logout', [LoginController::class, 'logout'])
         ->name('logout');
 
 });

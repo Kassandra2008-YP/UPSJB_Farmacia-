@@ -28,6 +28,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Sale::class);
     }
+
+    // Verifica si el usuario tiene alguno de los roles indicados
+    public function hasRole(...$roles): bool
+    {
+        return $this->role && in_array($this->role->name, $roles, true);
+    }
     /**
      * Get the attributes that should be cast.
      *
