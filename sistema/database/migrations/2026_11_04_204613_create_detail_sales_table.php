@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('detail_sales', function (Blueprint $table) {
             $table->id();
             $table->foreignId('sale_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('medicine_id')->constrained()->restrictOnDelete(); 
+            $table->foreignId('medicine_id')->constrained()->restrictOnDelete();
             $table->unsignedInteger('amount');
             $table->decimal('price_unit', 10, 2);
-             $table->decimal('subtotal', 10, 2);
+            $table->decimal('subtotal', 10, 2);
             $table->timestamps();
         });
     }
@@ -30,3 +30,5 @@ return new class extends Migration
         Schema::dropIfExists('detail_sales');
     }
 };
+
+

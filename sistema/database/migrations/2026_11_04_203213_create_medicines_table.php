@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('medicines', function (Blueprint $table) {
             $table->id();
             $table->foreignId('category_id')->constrained()->restrictOnDelete();
-             $table->string('name', 120); 
-             $table->decimal('price', 10, 2);
-             $table->unsignedInteger('stock')->default(0);
+            $table->string('name', 120);
+            $table->decimal('price', 10, 2);
+            $table->unsignedInteger('stock')->default(0);
             $table->timestamps();
         });
     }
@@ -29,3 +29,4 @@ return new class extends Migration
         Schema::dropIfExists('medicines');
     }
 };
+
