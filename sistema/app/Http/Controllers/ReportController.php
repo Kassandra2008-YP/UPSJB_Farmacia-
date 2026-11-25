@@ -1,83 +1,36 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Sale;
-use App\Models\Medicine;
+use App\Models\User;
+use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ReportController extends Controller
 {
     public function index(Request $request)
     {
-        // Obtener filtros de fecha
-        $from = $request->input('from');
-        $to = $request->input('to');
-
-        // Consultar ventas según el periodo seleccionado
-        $salesQuery = Sale::query()
-            ->when($from, function ($query) use ($from) {
-                $query->whereDate('date', '>=', $from);
-            })
-            ->when($to, function ($query) use ($to) {
-                $query->whereDate('date', '<=', $to);
-            });
-
-        // Indicadores principales
-        $totalSales = (clone $salesQuery)->sum('total');
-        $salesCount = (clone $salesQuery)->count();
-        $totalIgv = (clone $salesQuery)->sum('igv');
-
-        $averageSale = $salesCount > 0
-            ? $totalSales / $salesCount
-            : 0;
-
-        // Últimas ventas
-        $recentSales = (clone $salesQuery)
-            ->with(['customer', 'user'])
-            ->orderByDesc('date')
-            ->limit(10)
-            ->get();
-
-        // Medicamentos más vendidos
-        $topMedicines = DB::table('detail_sales')
-            ->join('sales', 'detail_sales.sale_id', '=', 'sales.id')
-            ->join('medicines', 'detail_sales.medicine_id', '=', 'medicines.id')
-            ->when($from, function ($query) use ($from) {
-                $query->whereDate('sales.date', '>=', $from);
-            })
-            ->when($to, function ($query) use ($to) {
-                $query->whereDate('sales.date', '<=', $to);
-            })
-            ->select(
-                'medicines.id',
-                'medicines.name',
-                DB::raw('SUM(detail_sales.amount) as quantity_sold'),
-                DB::raw('SUM(detail_sales.subtotal) as revenue')
-            )
-            ->groupBy('medicines.id', 'medicines.name')
-            ->orderByDesc('quantity_sold')
-            ->limit(5)
-            ->get();
-
-        // Medicamentos con stock bajo
-        $lowStock = Medicine::with('category')
-            ->where('stock', '<=', 5)
-            ->orderBy('stock')
-            ->get();
-
-        // Enviar todas las variables a la vista
-        return view('reports.index', compact(
-            'totalSales',
-            'salesCount',
-            'totalIgv',
-            'averageSale',
-            'recentSales',
-            'topMedicines',
-            'lowStock',
-            'from',
-            'to'
-        ));
+        $request->validate(['from'=>'nullable|date','to'=>'nullable|date|after_or_equal:from','seller'=>'nullable|exists:users,id','category'=>'nullable|exists:categories,id']);
+        $from = $request->input('from') ?: now()->startOfMonth()->toDateString();
+        $to = $request->input('to') ?: now()->endOfMonth()->toDateString();
+        $seller = $request->input('seller');
+        $category = $request->input('category');
+        $vendors = User::orderBy('name')->get();
+        $categories = Category::orderBy('name')->get();
+        $query = Sale::query()->whereDate('date','>=',$from)->whereDate('date','<=',$to)
+            ->when($seller, fn($q)=>$q->where('user_id',$seller))
+            ->when($category, fn($q)=>$q->whereHas('details.medicine',fn($m)=>$m->where('category_id',$category)));
+        $totalSales = (clone $query)->sum('total');
+        $salesCount = (clone $query)->count();
+        $averageSale = $salesCount ? $totalSales/$salesCount : 0;
+        $recentSales = (clone $query)->with(['customer','user'])->orderByDesc('date')->get();
+        $daily = (clone $query)->selectRaw('DATE(date) as day, SUM(total) as revenue')->groupByRaw('DATE(date)')->pluck('revenue','day');
+        $labels = []; $values = [];
+        for ($day = Carbon::parse($from); $day->lte(Carbon::parse($to)); $day->addDay()) {
+            $labels[] = $day->format('d/m/Y');
+            $values[] = (float) ($daily[$day->toDateString()] ?? 0);
+        }
+        return view('reports.index', compact('from','to','seller','category','vendors','categories','totalSales','salesCount','averageSale','recentSales','labels','values'));
     }
 }
