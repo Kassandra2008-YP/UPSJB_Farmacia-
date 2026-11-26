@@ -51,8 +51,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('customers', CustomerController::class)
         ->except('show');
 
-    Route::resource('sales', SaleController::class)
-        ->except(['edit', 'update']);
+    Route::resource('sales', SaleController::class);
 
     Route::resource('roles', RoleController::class)
         ->except('show');
@@ -64,6 +63,10 @@ Route::middleware('auth')->group(function () {
     // Reportes
     Route::get('/reports', [ReportController::class, 'index'])
         ->name('reports.index');
+    Route::get('/reports/pdf', [ReportController::class, 'pdf'])
+        ->name('reports.pdf');
+    Route::get('/reports/excel', [ReportController::class, 'excel'])
+        ->name('reports.excel');
 
 
     // Perfil del usuario

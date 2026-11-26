@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta name="description" content="San Juan – Sistema de Venta de Medicamentos">
+    <meta name="theme-color" content="#343a40">
+    <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('icons/icon-192.svg') }}">
 
     <title>FARM SJB | @yield('title')</title>
 
@@ -83,6 +86,12 @@
 <script src="{{ asset('js/app.js') }}"></script>
 
 @stack('scripts')
+
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js'));
+}
+</script>
 
 </body>
 </html>

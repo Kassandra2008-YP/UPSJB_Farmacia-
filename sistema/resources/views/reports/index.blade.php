@@ -19,6 +19,8 @@
 <div><label for="category">Categoría</label><select class="form-select" id="category" name="category"><option value="">Todas</option>@foreach($categories as $item)<option value="{{ $item->id }}" @selected($category == $item->id)>{{ $item->name }}</option>@endforeach</select></div>
 <button class="btn report-red" type="submit"><i class="bi bi-funnel"></i> Filtrar</button>
 <a class="btn btn-outline-secondary" title="Limpiar filtros" href="{{ route('reports.index') }}"><i class="bi bi-arrow-counterclockwise"></i> Limpiar</a>
+<a class="btn btn-outline-secondary" href="{{ route('reports.pdf', ['from' => $from, 'to' => $to, 'seller' => $seller, 'category' => $category]) }}"><i class="bi bi-file-earmark-pdf"></i> Descargar PDF</a>
+<a class="btn btn-outline-secondary" href="{{ route('reports.excel', ['from' => $from, 'to' => $to, 'seller' => $seller, 'category' => $category]) }}"><i class="bi bi-file-earmark-excel"></i> Descargar Excel</a>
 </form>
 @foreach($errors->all() as $error)<div class="text-danger mt-2">{{ $error }}</div>@endforeach
 </div>

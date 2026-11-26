@@ -117,4 +117,76 @@ class SaleController extends Controller
 
         return to_route('sales.index')->with('ok', 'Venta anulada y stock devuelto');
     }
+
+    // Formulario para editar una venta sin cambiar su vendedor ni fecha
+    public function edit(Sale $sale)
+    {
+        $sale->load(['customer', 'details.medicine']);
+        $customers = Customer::orderBy('name')->get();
+        $medicines = Medicine::orderBy('name')->get();
+
+        return view('management.sales.edit', compact('sale', 'customers', 'medicines'));
+    }
+
+    // Actualizar la venta y ajustar el stock con integridad transaccional
+    public function update(Request $request, Sale $sale)
+    {
+        $request->validate([
+            'customer_id' => 'required|exists:customers,id',
+            'items' => 'required|array|min:1',
+            'items.*.medicine_id' => 'required|distinct|exists:medicines,id',
+            'items.*.amount' => 'required|integer|min:1',
+        ], [
+            'items.required' => 'Debe agregar al menos un medicamento.',
+            'items.*.medicine_id.distinct' => 'No repita el mismo medicamento, aumente la cantidad.',
+        ]);
+
+        DB::transaction(function () use ($request, $sale) {
+            $sale->load('details');
+
+            // Devuelve primero todo el stock consumido por los detalles originales
+            foreach ($sale->details as $detail) {
+                Medicine::whereKey($detail->medicine_id)->increment('stock', $detail->amount);
+            }
+
+            // Los precios históricos se conservan por medicamento
+            $historicalPrices = $sale->details->pluck('price_unit', 'medicine_id');
+            $sale->details()->delete();
+
+            $total = 0;
+
+            foreach ($request->items as $item) {
+                $medicine = Medicine::lockForUpdate()->findOrFail($item['medicine_id']);
+
+                if ($medicine->stock < $item['amount']) {
+                    throw ValidationException::withMessages([
+                        'items' => "Stock insuficiente para {$medicine->name} (disponible: {$medicine->stock}).",
+                    ]);
+                }
+
+                $priceUnit = $historicalPrices->has($medicine->id)
+                    ? (float) $historicalPrices[$medicine->id]
+                    : (float) $medicine->price;
+                $subtotal = $priceUnit * $item['amount'];
+
+                $sale->details()->create([
+                    'medicine_id' => $medicine->id,
+                    'amount' => $item['amount'],
+                    'price_unit' => $priceUnit,
+                    'subtotal' => $subtotal,
+                ]);
+
+                $medicine->decrement('stock', $item['amount']);
+                $total += $subtotal;
+            }
+
+            $sale->update([
+                'customer_id' => $request->customer_id,
+                'total' => $total,
+                'igv' => round($total * 18 / 118, 2),
+            ]);
+        });
+
+        return to_route('sales.show', $sale)->with('ok', 'Venta actualizada');
+    }
 }

@@ -1,15 +1,45 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Exports\SalesReportExport;
 use App\Models\Sale;
 use App\Models\User;
 use App\Models\Category;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 
 class ReportController extends Controller
 {
     public function index(Request $request)
+    {
+        return view('reports.index', $this->getReportData($request));
+    }
+
+    // Descarga el reporte PDF respetando los filtros seleccionados
+    public function pdf(Request $request)
+    {
+        $data = $this->getReportData($request);
+
+        return Pdf::loadView('reports.pdf', $data)
+            ->setPaper('a4', 'portrait')
+            ->download('reporte-ventas.pdf');
+    }
+
+    // Descarga el reporte Excel respetando los filtros seleccionados
+    public function excel(Request $request)
+    {
+        $data = $this->getReportData($request);
+
+        return Excel::download(
+            new SalesReportExport($data['recentSales']),
+            'reporte-ventas.xlsx'
+        );
+    }
+
+    // Construye una sola vez la consulta utilizada por pantalla y exportaciones
+    private function getReportData(Request $request): array
     {
         $request->validate(['from'=>'nullable|date','to'=>'nullable|date|after_or_equal:from','seller'=>'nullable|exists:users,id','category'=>'nullable|exists:categories,id']);
         $from = $request->input('from') ?: now()->startOfMonth()->toDateString();
@@ -31,6 +61,7 @@ class ReportController extends Controller
             $labels[] = $day->format('d/m/Y');
             $values[] = (float) ($daily[$day->toDateString()] ?? 0);
         }
-        return view('reports.index', compact('from','to','seller','category','vendors','categories','totalSales','salesCount','averageSale','recentSales','labels','values'));
+
+        return compact('from','to','seller','category','vendors','categories','totalSales','salesCount','averageSale','recentSales','labels','values');
     }
 }
